@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; padding: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="1024" height="1024"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Background gradient
+        const bgGradient = ctx.createLinearGradient(0, 0, 1024, 1024);
+        bgGradient.addColorStop(0, '#0A0E27');
+        bgGradient.addColorStop(0.5, '#1A1F3A');
+        bgGradient.addColorStop(1, '#2D1B4E');
+        ctx.fillStyle = bgGradient;
+        ctx.fillRect(0, 0, 1024, 1024);
+        
+        // Stars
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        const stars = [
+            [150, 120, 8], [800, 180, 6], [250, 350, 7],
+            [750, 280, 6], [120, 600, 6], [880, 650, 8],
+            [350, 850, 6], [650, 150, 7]
+        ];
+        stars.forEach(([x, y, r]) => {
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        
+        // Glow behind ship
+        const glowGradient = ctx.createRadialGradient(512, 450, 0, 512, 450, 200);
+        glowGradient.addColorStop(0, 'rgba(0, 245, 255, 0.4)');
+        glowGradient.addColorStop(0.5, 'rgba(0, 128, 255, 0.2)');
+        glowGradient.addColorStop(1, 'rgba(0, 128, 255, 0)');
+        ctx.fillStyle = glowGradient;
+        ctx.fillRect(312, 250, 400, 400);
+        
+        // Spaceship
+        const shipGradient = ctx.createLinearGradient(512, 200, 512, 700);
+        shipGradient.addColorStop(0, '#00F5FF');
+        shipGradient.addColorStop(1, '#0080FF');
+        ctx.fillStyle = shipGradient;
+        ctx.strokeStyle = '#00F5FF';
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.moveTo(512, 200);
+        ctx.lineTo(300, 700);
+        ctx.lineTo(512, 640);
+        ctx.lineTo(724, 700);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        
+        // Ship details
+        ctx.fillStyle = 'rgba(0, 245, 255, 0.8)';
+        ctx.beginPath();
+        ctx.arc(512, 350, 25, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = 'rgba(0, 128, 255, 0.6)';
+        ctx.beginPath();
+        ctx.arc(450, 500, 18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(574, 500, 18, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Engine glow
+        const engineGradient1 = ctx.createRadialGradient(380, 700, 0, 380, 700, 40);
+        engineGradient1.addColorStop(0, '#FFAA00');
+        engineGradient1.addColorStop(1, '#FF6600');
+        ctx.fillStyle = engineGradient1;
+        ctx.beginPath();
+        ctx.ellipse(380, 700, 25, 45, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        const engineGradient2 = ctx.createRadialGradient(644, 700, 0, 644, 700, 40);
+        engineGradient2.addColorStop(0, '#FFAA00');
+        engineGradient2.addColorStop(1, '#FF6600');
+        ctx.fillStyle = engineGradient2;
+        ctx.beginPath();
+        ctx.ellipse(644, 700, 25, 45, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Bullet
+        ctx.fillStyle = '#00F5FF';
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#00F5FF';
+        ctx.fillRect(506, 100, 12, 60);
+        ctx.shadowBlur = 0;
+        
+        // Download link
+        setTimeout(() => {
+            const link = document.createElement('a');
+            link.download = 'icon.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }, 100);
+    </script>
+</body>
+</html>

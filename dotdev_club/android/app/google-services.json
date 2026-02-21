@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "310960247974",
+    "project_id": "dotdev-club",
+    "storage_bucket": "dotdev-club.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:310960247974:android:91ef01531fa21c75be1067",
+        "android_client_info": {
+          "package_name": "com.dotdev.dotdev_club"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiB7kthPv2gGp51XTtE2n4QguY5iQkcuY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
