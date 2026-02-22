@@ -1,0 +1,71 @@
+with
+import { useEffect, useRef, useState } from "react";
+
+export default function App() {
+  const [volume, setVolume] = useState(0);
+  const circleRef = useRef(null);
+
+  useEffect(() => {
+    async function setupMic() {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const audioContext = new AudioContext();
+      const source = audioContext.createMediaStreamSource(stream);
+      const analyser = audioContext.createAnalyser();
+
+      analyser.fftSize = 256;
+      source.connect(analyser);
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+      function update() {
+        analyser.getByteFrequencyData(dataArray);
+
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) 
+          sum += dataArray[i];
+        }
+
+        const avg = sum / dataArray.length;
+        setVolume(avg / 255);
+
+        requestAnimationFrame(update);
+      }
+
+      update();
+    }
+
+    setupMic();
+  }, []);
+
+  const size = 200 + volume * 200;
+  const glow = 20 + volume * 50;
+
+  return (
+    <div style={styles.container}>
+      <div
+        ref={circleRef}
+        style={{
+          ...styles.circle,
+          width: size,
+          height: size,
+          boxShadow: `0 0 ${glow}px rgba(0, 150, 255, 0.8)`,
+        }}
+      />
+    </div>
+  );
+}
+
+const styles = {
+  container: {
+    height: "100vh",
+    background: "black",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  circle: {
+    borderRadius: "50%",
+    background: "radial-gradient(circle, #00aaff, #0044ff)",
+    transition: "width 0.1s, height 0.1s",
+  },
+};
