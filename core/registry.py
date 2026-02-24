@@ -11,16 +11,17 @@ class SkillRegistry:
         self.functions: Dict[str, Callable] = {}
 
     def load_skills(self, skills_dir: str, context: Dict[str, Any] = None):
-        """Dynamically load skills from the specified directory."""
+        """Dynamically load skills recursively from the specified directory."""
         if not os.path.exists(skills_dir):
             print(f"Skills directory not found: {skills_dir}")
             return
 
-        for filename in os.listdir(skills_dir):
-            if filename.endswith(".py") and filename != "__init__.py":
-                module_name = filename[:-3]
-                file_path = os.path.join(skills_dir, filename)
-                self._load_skill_from_file(module_name, file_path, context)
+        for root, dirs, files in os.walk(skills_dir):
+            for filename in files:
+                if filename.endswith(".py") and filename != "__init__.py":
+                    module_name = filename[:-3]
+                    file_path = os.path.join(root, filename)
+                    self._load_skill_from_file(module_name, file_path, context)
 
     def _load_skill_from_file(self, module_name: str, file_path: str, context: Dict[str, Any] = None):
         spec = importlib.util.spec_from_file_location(module_name, file_path)

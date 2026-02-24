@@ -4,10 +4,14 @@ import os
 
 # Safely import WhatsApp client
 try:
-    from skills.whatsapp.whatsapp_client import WhatsAppClient
+    from .whatsapp_driver.whatsapp_client import WhatsAppClient
     HAS_WHATSAPP = True
 except ImportError:
-    HAS_WHATSAPP = False
+    try:
+        from features.automation.whatsapp_driver.whatsapp_client import WhatsAppClient
+        HAS_WHATSAPP = True
+    except ImportError:
+        HAS_WHATSAPP = False
 
 class WhatsappSkill(Skill):
     """
@@ -23,12 +27,14 @@ class WhatsappSkill(Skill):
         return "whatsapp_skill"
         
     def _load_contacts(self):
-        contacts_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "contacts.json")
+        contacts_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "assets", "storage", "contacts.json")
         try:
-            with open(contacts_path, 'r') as f:
-                return json.load(f)
+            if os.path.exists(contacts_path):
+                with open(contacts_path, 'r') as f:
+                    return json.load(f)
+            return {}
         except Exception as e:
-            print(f"WhatsApp contacts not found (contacts.json): {e}")
+            print(f"WhatsApp contacts error: {e}")
             return {}
 
     def _get_client(self):

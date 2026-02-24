@@ -39,15 +39,14 @@ class VisionSkill(Skill):
         Launches the video_system.py script in a separate process.
         """
         try:
-            # Get path to video_system.py (assumed to be in root project dir)
-            root_dir = os.path.dirname(os.path.dirname(__file__))
-            script_path = os.path.join(root_dir, "video_system.py")
+            # Get path to video_system.py in the same folder
+            current_dir = os.path.dirname(__file__)
+            script_path = os.path.join(current_dir, "video_system.py")
             
             if not os.path.exists(script_path):
                 return f"Error: Vision system script not found at {script_path}"
 
             # Launch process
-            # use sys.executable to ensure we use the same python interpreter (venv)
             subprocess.Popen([sys.executable, script_path])
             
             return "Live Vision System started. Check for the new window."

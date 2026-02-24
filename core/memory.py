@@ -7,8 +7,8 @@ class MemorySkill(Skill):
     """Skill for persistent memory storage and retrieval."""
     
     def __init__(self):
-        # Store memory in user's home directory
-        self.memory_file = os.path.expanduser("~/.jarvic_memory.json")
+        # Store memory in assets/storage
+        self.memory_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "storage", "memory.json")
         self._ensure_memory_file()
     
     @property

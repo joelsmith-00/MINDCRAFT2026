@@ -27,6 +27,8 @@ class DetectionSkill(Skill):
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
             self.device = "cpu"
+        # Adjusted model path - now in the same folder as the skill
+        self.model_path = os.path.join(os.path.dirname(__file__), "yolov8n.pt")
         print(f"DetectionSkill: Using device '{self.device}' (torch={'yes' if HAS_TORCH else 'no'}, yolo={'yes' if HAS_YOLO else 'no'})")
 
     @property
@@ -38,9 +40,14 @@ class DetectionSkill(Skill):
             if not HAS_YOLO:
                 print("YOLO not available - ultralytics not installed")
                 return
-            print("Loading YOLOv8 model...")
+            print(f"Loading YOLOv8 model from {self.model_path}...")
             try:
-                self.model = YOLO("yolov8n.pt") 
+                # Use absolute path
+                if os.path.exists(self.model_path):
+                    self.model = YOLO(self.model_path) 
+                else:
+                    self.model = YOLO("yolov8n.pt") # Fallback to auto-download
+                    
                 if HAS_TORCH:
                     self.model.to(self.device)
                 print("YOLOv8 model loaded.")
@@ -78,7 +85,7 @@ class DetectionSkill(Skill):
         try:
             self._load_model()
             if not self.model:
-                 return "Error: YOLO model failed to load."
+                return "Error: YOLO model failed to load."
             
             cap = cv2.VideoCapture(0)
             if not cap.isOpened():
@@ -104,10 +111,10 @@ class DetectionSkill(Skill):
             if not detections:
                 return "No objects detected."
             
-            assets_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets")
-            os.makedirs(assets_dir, exist_ok=True)
+            storage_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "assets", "storage", "camera_photos")
+            os.makedirs(storage_dir, exist_ok=True)
             timestamp = int(time.time())
-            filepath = os.path.join(assets_dir, f"detection_{timestamp}.jpg")
+            filepath = os.path.join(storage_dir, f"detection_{timestamp}.jpg")
             
             annotated_frame = results[0].plot()
             cv2.imwrite(filepath, annotated_frame)

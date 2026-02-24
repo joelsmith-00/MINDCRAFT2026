@@ -8,8 +8,8 @@ class ScreenshotSkill(Skill):
     """Skill for taking screenshots on Windows."""
     
     def __init__(self):
-        # Screenshot directory on Desktop
-        self.screenshot_dir = r"C:\Users\joelm\OneDrive\Desktop\screenshot by lumi"
+        # Screenshot directory in assets
+        self.screenshot_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "assets", "storage", "screenshots")
         # Create directory if it doesn't exist
         os.makedirs(self.screenshot_dir, exist_ok=True)
     

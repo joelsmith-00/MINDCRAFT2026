@@ -69,6 +69,14 @@ def lumi_loop(pause_event, registry, args):
         for word in ["lumi", "loomy", "lumy", "luminee", "jarvis"]:
             clean_query = clean_query.replace(word, "").strip()
         
+        # Shutdown command check
+        if any(cmd in user_query for cmd in ["stop", "exit", "goodbye", "turn off"]):
+            print("LUMI: Shutting down system. Goodbye!")
+            speak("Goodbye Joel, turning off now.")
+            # Use os._exit to kill all threads immediately
+            import os
+            os._exit(0)
+
         if not clean_query:
             clean_query = "hello"
         
@@ -108,7 +116,7 @@ def main():
 
     from core.registry import SkillRegistry
     registry = SkillRegistry()
-    skills_dir = os.path.join(os.path.dirname(__file__), "skills")
+    skills_dir = os.path.join(os.path.dirname(__file__), "features")
     registry.load_skills(skills_dir, context=context)
     
     if args.text:
@@ -122,7 +130,7 @@ def main():
         t.start()
         
         try:
-            from gui.wave_ui import run_gui as run_gui_app
+            from app.gui.app import run_gui as run_gui_app
             run_gui_app(pause_event)
         except Exception as e:
             print(f"\n[!] GUI ERROR: {e}")
